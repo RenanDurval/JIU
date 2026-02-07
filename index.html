@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JIUConnect - A Home do Jiu-Jitsu</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/svg+xml"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🥋</text></svg>">
+    <!-- Meta Tags SEO -->
+    <meta name="description"
+        content="A plataforma definitiva para atletas, professores e federações de Jiu-Jitsu. Treinos, torneios e informações oficiais em um só lugar.">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://jiuconnect.app/">
+    <meta property="og:title" content="JIUConnect - A Home do Jiu-Jitsu">
+    <meta property="og:description"
+        content="A plataforma definitiva para atletas, professores e federações de Jiu-Jitsu.">
+    <meta property="og:image" content="https://jiuconnect.app/og-image.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:title" content="JIUConnect - A Home do Jiu-Jitsu">
+    <meta property="twitter:description"
+        content="A plataforma definitiva para atletas, professores e federações de Jiu-Jitsu.">
+    <meta property="twitter:image" content="https://jiuconnect.app/og-image.jpg">
+</head>
+
+<body>
+    <a href="#main-content" class="skip-link">Pular para o conteúdo</a>
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo">
+                    JIU<span>Connect</span>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#dashboard">Dashboard</a></li>
+                    <li><a href="#torneios">Torneios</a></li>
+                    <li><a href="#hub">Hub Info</a></li>
+                </ul>
+                <div class="auth-buttons">
+                    <button class="btn btn-primary" id="loginBtn">Entrar</button>
+                    <div id="userProfileDisplay" role="button" tabindex="0"
+                        style="display: none; align-items: center; gap: 10px; color: white; cursor: pointer;">
+                        <i class="fas fa-user-circle" style="font-size: 1.5rem;"></i>
+                        <span id="userNameDisplay">Usuário</span>
+                    </div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Settings Modal (Backup/Restore) -->
+    <div id="settingsModal" class="modal">
+        <div class="modal-content" style="max-width: 400px; text-align: center;">
+            <span class="close-modal" id="closeSettingsModal">&times;</span>
+            <h2>Minha Conta</h2>
+            <div style="margin: 2rem 0;">
+                <p style="margin-bottom: 1rem;">Gerencie seus dados locais:</p>
+                <button id="btnExport" class="btn"
+                    style="width: 100%; margin-bottom: 1rem; border: 1px solid var(--color-kimono-blue);">
+                    <i class="fas fa-download"></i> Baixar Backup dos Dados
+                </button>
+                <div style="position: relative;">
+                    <button class="btn" style="width: 100%; border: 1px solid #666; background: #f5f5f5; color: #333;"
+                        onclick="document.getElementById('fileImport').click()">
+                        <i class="fas fa-upload"></i> Restaurar Backup
+                    </button>
+                    <input type="file" id="fileImport" style="display: none;" accept=".json">
+                </div>
+            </div>
+            <button id="btnLogout" class="btn" style="width: 100%; background: #ff4d4f; color: white;">Sair</button>
+        </div>
+    </div>
+
+    <main id="main-content">
+        <section class="hero">
+            <div class="container">
+                <h1>Sua Jornada no <span>Jiu-Jitsu</span> Começa Aqui</h1>
+                <p>Conectando a comunidade do tatame: treinos, competições e conhecimento oficial.</p>
+                <button class="btn btn-primary" id="exploreBtn">Começar Agora</button>
+            </div>
+        </section>
+
+        <section class="container" id="dashboard">
+            <div class="dashboard-grid">
+                <!-- Activity Tracker -->
+                <div class="card" style="grid-row: span 2;">
+                    <i class="fas fa-user-ninja"></i>
+                    <h3>Meu Progresso</h3>
+                    <p>Acompanhe suas horas de tatame, graduação e metas de treino.</p>
+
+                    <!-- Analytics Widget -->
+                    <div id="analyticsWidget"
+                        style="background: var(--color-soft-gray); padding: 1rem; border-radius: 8px; margin: 1rem 0;">
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <small>Total de Treinos</small>
+                            <strong id="statTotalLogs">0</strong>
+                        </div>
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                            <small>Horas no Tatame</small>
+                            <strong id="statTotalHours">0h</strong>
+                        </div>
+                        <div style="margin-top: 1rem;">
+                            <small>Frequência (Últimos 7 dias)</small>
+                            <div id="weeklyChart"
+                                style="display: flex; gap: 4px; height: 40px; align-items: flex-end; margin-top: 5px;">
+                                <!-- Bars populated by JS -->
+                            </div>
+                        </div>
+                        <div id="badgeContainer" style="display: flex; gap: 5px; margin-top: 1rem; flex-wrap: wrap;">
+                            <!-- Badges populated by JS -->
+                        </div>
+                    </div>
+
+                    <button class="btn btn-sm btn-primary" id="openLogModal"
+                        style="margin-top: 1rem; width: 100%;">Registrar Treino</button>
+                    <div id="training-log-list"
+                        style="margin-top: 1rem; text-align: left; max-height: 300px; overflow-y: auto;">
+                        <!-- Logs serão inseridos aqui -->
+                    </div>
+                </div>
+
+                <!-- Tournament List -->
+                <div class="card" style="grid-column: span 2;">
+                    <div
+                        style="display:flex; justify-content:space-between; align-items:center; margin-bottom:1rem; flex-wrap: wrap; gap: 10px;">
+                        <h3>Próximos Torneios</h3>
+                        <div class="filters" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                            <div style="display: flex; gap: 5px;">
+                                <input type="text" id="tournSearch" placeholder="Buscar evento (ex: Rio Open...)"
+                                    style="padding: 5px; border-radius: 4px; border: 1px solid #ddd;">
+                                <button id="btnSearchTourn" class="btn btn-sm btn-primary"><i
+                                        class="fas fa-search"></i></button>
+                            </div>
+                            <select id="regionFilter" style="padding: 5px; border-radius: 4px; border: 1px solid #ddd;">
+                                <option value="all">Todas Regiões</option>
+                                <option value="brasil">Brasil</option>
+                                <option value="usa">EUA</option>
+                                <option value="europe">Europa</option>
+                            </select>
+                            <select id="levelFilter" style="padding: 5px; border-radius: 4px; border: 1px solid #ddd;">
+                                <option value="all">Todas Faixas</option>
+                                <option value="white">Branca</option>
+                                <option value="blue">Azul</option>
+                                <option value="purple">Roxa</option>
+                                <option value="brown">Marrom</option>
+                                <option value="black">Preta</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div id="tournamentGrid"
+                        style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;">
+                        <!-- Populated by JS -->
+                    </div>
+                    <button id="addTournamentBtn" class="btn btn-sm"
+                        style="margin-top: 1rem; width: 100%; border: 1px dashed #ccc; background: white; color: #666; display: none;">
+                        <i class="fas fa-plus"></i> Cadastrar Torneio
+                    </button>
+                </div>
+
+            </div>
+
+            <!-- Info Hub -->
+            <div class="card">
+                <i class="fas fa-book-open"></i>
+                <h3>Biblioteca Técnica</h3>
+                <p>Busque regras, história e técnicas das principais escolas.</p>
+            </div>
+            </div>
+        </section>
+
+        <section class="container" id="tecnicas"
+            style="padding: 2rem 0; background-color: var(--color-pure-white); margin-top: 2rem; border-radius: 12px; padding: 2rem;">
+            <h2>Biblioteca Técnica</h2>
+            <div class="form-group" style="margin-top: 1rem;">
+                <input type="text" id="techSearch" placeholder="Buscar técnica (ex: Armlock, Raspagem...)"
+                    style="padding: 1rem;">
+            </div>
+            <div id="techList"
+                style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 1rem; margin-top: 1.5rem;">
+                <!-- Dynamically populated techniques -->
+            </div>
+        </section>
+
+        <section class="container" id="updates" style="padding: 2rem 0;">
+            <h2>Últimas Federações</h2>
+            <div id="federationList" style="margin-top: 1rem;">
+                <!-- Dynamically populated -->
+                <p>Carregando informações das federações...</p>
+            </div>
+        </section>
+    </main>
+
+    <footer
+        style="background: var(--color-tatame-charcoal); color: white; padding: 3rem 0; text-align: center; margin-top: 5rem;">
+        <div class="container">
+            <div class="logo" style="justify-content: center; margin-bottom: 1rem;">
+                JIU<span>Connect</span>
+            </div>
+            <p>&copy; 2026 JIUConnect. Todos os direitos reservados - Brazilian Jiu-Jitsu Ecosystem.</p>
+        </div>
+    </footer>
+
+    <div id="toast-container"></div>
+
+    <!-- Training Log Modal -->
+    <div id="logModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2>Registrar Treino</h2>
+            <form id="trainingForm">
+                <div class="form-group">
+                    <label>Data</label>
+                    <input type="date" id="trainDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Duração (min)</label>
+                    <input type="number" id="trainDuration" placeholder="60" required>
+                </div>
+                <div class="form-group">
+                    <label>Tipo</label>
+                    <select id="trainType" class="form-select" style="width: 100%;">
+                        <option value="Gi">Com Kimono (Gi)</option>
+                        <option value="No-Gi">Sem Kimono (No-Gi)</option>
+                        <option value="Drill">Drill / Posição</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Foco do Treino</label>
+                    <input type="text" id="trainFocus" placeholder="Ex: Passagem de guarda, Defesa pessoal">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Salvar Registro</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Confirm Modal -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content" style="text-align: center; max-width: 400px;">
+            <i class="fas fa-exclamation-triangle" style="font-size: 3rem; color: #ff4d4f; margin-bottom: 1rem;"></i>
+            <h3>Tem certeza?</h3>
+            <p>Você deseja excluir este registro de treino? Essa ação não pode ser desfeita.</p>
+            <div style="display: flex; gap: 1rem; justify-content: center; margin-top: 1.5rem;">
+                <button class="btn" id="cancelDelete" style="background: var(--color-soft-gray);">Cancelar</button>
+                <button class="btn" id="confirmDeleteAction" style="background: #ff4d4f; color: white;">Excluir</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Technique Detail Modal -->
+    <div id="techModal" class="modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <span class="close-modal" id="closeTechModal">&times;</span>
+            <div id="techDetailContent">
+                <!-- Dynamically populated -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="authModal" class="modal">
+        <div class="modal-content" style="max-width: 400px;">
+            <span class="close-modal" id="closeAuthModal">&times;</span>
+            <h2 id="authTitle">Entrar no JIUConnect</h2>
+            <form id="authForm">
+                <div class="form-group">
+                    <label>Nome do Atleta</label>
+                    <input type="text" id="authName" required>
+                </div>
+                <div class="form-group">
+                    <label>Faixa</label>
+                    <select id="authBelt" class="form-select" style="width: 100%;">
+                        <option value="White">Branca</option>
+                        <option value="Blue">Azul</option>
+                        <option value="Purple">Roxa</option>
+                        <option value="Brown">Marrom</option>
+                        <option value="Black">Preta</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Academia / Time</label>
+                    <input type="text" id="authTeam" placeholder="Ex: Gracie Barra, Alliance...">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Acessar Dashboard</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tournament Registration Modal -->
+    <div id="tournamentModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeTournModal">&times;</span>
+            <h2>Cadastrar Torneio</h2>
+            <form id="tournamentForm">
+                <div class="form-group">
+                    <label>Nome do Evento</label>
+                    <input type="text" id="tournName" required>
+                </div>
+                <div class="form-group">
+                    <label>Data</label>
+                    <input type="date" id="tournDate" required>
+                </div>
+                <div class="form-group">
+                    <label>Região</label>
+                    <select id="tournRegion" class="form-select" style="width: 100%;">
+                        <option value="brasil">Brasil</option>
+                        <option value="usa">EUA</option>
+                        <option value="europe">Europa</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>Link Oficial (Opcional)</label>
+                    <input type="url" id="tournLink" placeholder="https://...">
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%;">Submeter Evento</button>
+            </form>
+        </div>
+    </div>
+
+    <script src="services/DatabaseService.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
