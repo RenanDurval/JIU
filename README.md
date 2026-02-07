@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # JIUConnect - A Home do Jiu-Jitsu 🥋
 
 > **Conectando atletas, professores e competições em um só lugar.**
@@ -55,3 +56,6 @@ Contribuições são bem-vindas! Se você tiver ideias para novas features ou me
 ---
 
 Desenvolvido com 🥋 e código por **Renan Durval**.
+=======
+# JIU
+>>>>>>> 906d1952a42974b0d33bf524234de33f6577a638
